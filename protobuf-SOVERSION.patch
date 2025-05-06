@@ -1,0 +1,53 @@
+diff --git a/cmake/libprotobuf-lite.cmake b/cmake/libprotobuf-lite.cmake
+index 9aa81fb..dfe1fba 100644
+--- a/cmake/libprotobuf-lite.cmake
++++ b/cmake/libprotobuf-lite.cmake
+@@ -36,6 +36,7 @@ if(protobuf_BUILD_SHARED_LIBS)
+     PRIVATE LIBPROTOBUF_EXPORTS)
+ endif()
+ set_target_properties(libprotobuf-lite PROPERTIES
++    SOVERSION "${protobuf_VERSION_MINOR}.${protobuf_VERSION_PATCH}"
+     VERSION ${protobuf_VERSION}
+     OUTPUT_NAME ${LIB_PREFIX}protobuf-lite
+     DEBUG_POSTFIX "${protobuf_DEBUG_POSTFIX}"
+diff --git a/cmake/libprotobuf.cmake b/cmake/libprotobuf.cmake
+index 11c09b1..03cdddb 100644
+--- a/cmake/libprotobuf.cmake
++++ b/cmake/libprotobuf.cmake
+@@ -38,6 +38,7 @@ if(protobuf_BUILD_SHARED_LIBS)
+     PRIVATE LIBPROTOBUF_EXPORTS)
+ endif()
+ set_target_properties(libprotobuf PROPERTIES
++    SOVERSION "${protobuf_VERSION_MINOR}.${protobuf_VERSION_PATCH}"
+     VERSION ${protobuf_VERSION}
+     OUTPUT_NAME ${LIB_PREFIX}protobuf
+     DEBUG_POSTFIX "${protobuf_DEBUG_POSTFIX}"
+diff --git a/cmake/libprotoc.cmake b/cmake/libprotoc.cmake
+index 38a67aa..bf84b94 100644
+--- a/cmake/libprotoc.cmake
++++ b/cmake/libprotoc.cmake
+@@ -26,6 +26,7 @@ if(protobuf_BUILD_SHARED_LIBS)
+ endif()
+ set_target_properties(libprotoc PROPERTIES
+     COMPILE_DEFINITIONS LIBPROTOC_EXPORTS
++    SOVERSION "${protobuf_VERSION_MINOR}.${protobuf_VERSION_PATCH}"
+     VERSION ${protobuf_VERSION}
+     OUTPUT_NAME ${LIB_PREFIX}protoc
+     DEBUG_POSTFIX "${protobuf_DEBUG_POSTFIX}"
+diff --git a/third_party/utf8_range/CMakeLists.txt b/third_party/utf8_range/CMakeLists.txt
+index 67d2094..619f96e 100644
+--- a/third_party/utf8_range/CMakeLists.txt
++++ b/third_party/utf8_range/CMakeLists.txt
+@@ -20,10 +20,12 @@ add_library (utf8_range
+ add_library (utf8_validity utf8_validity.cc utf8_range.c)
+ 
+ set_target_properties(utf8_range PROPERTIES
++  SOVERSION "${protobuf_VERSION_MINOR}.${protobuf_VERSION_PATCH}"
+   VERSION ${protobuf_VERSION}
+   OUTPUT_NAME ${LIB_PREFIX}utf8_range
+ )
+ set_target_properties(utf8_validity PROPERTIES
++  SOVERSION "${protobuf_VERSION_MINOR}.${protobuf_VERSION_PATCH}"
+   VERSION ${protobuf_VERSION}
+   OUTPUT_NAME ${LIB_PREFIX}utf8_validity
+ )
