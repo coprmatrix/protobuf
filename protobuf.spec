@@ -11,12 +11,11 @@
 # Version
 # Check sub pkg versions from version.json
 # or from src/google/protobuf/compiler/versions.h
-%define uversion          %{version}
-%define protobuf_cpp_ver  6.%{uversion}
-%define protobuf_java_ver 4.%{uversion}
+%define protobuf_cpp_ver  6.%{version}
+%define protobuf_java_ver 4.%{version}
 
 # Major
-%define major           %{uversion}
+%define major           %{version}
 
 # Library names
 %define libname         %mklibname %{name} %{major}
@@ -24,7 +23,7 @@
 %define libcompiler     %mklibname libprotoc %{major}
 %define develname       %mklibname %{name} -d
 
-%define majorutf8       %{uversion}
+%define majorutf8       %{version}
 %define libutf8         %mklibname utf8_range %{majorutf8}
 %define devutf8         %mklibname utf8_range -d
 
@@ -32,7 +31,7 @@
 
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
-Version:        30.0
+Version:        30.2
 Release:        %mkrel 2
 License:        BSD
 Group:          System/Libraries
