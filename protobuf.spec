@@ -222,7 +222,7 @@ Protocol Buffer Parent POM.
 %endif
 
 %prep
-%autosetup -p1
+%autosetup -p1 -n %{_name}-%{uversion}
 
 find -name \*.cc -o -name \*.h | xargs chmod -x
 
