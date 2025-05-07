@@ -5,12 +5,14 @@
 %bcond_without java
 %bcond_with java_tests
 
+Summary:        Protocol Buffers - Google's data interchange format
+Name:           protobuf
+Version:        30.2
+
 %define mklibname(d) %{lua: name = arg[1]; if opt.d then name = name .. "-devel" end; print(name) }
 %define mkrel() %{lua: print(rpm.expand( arg[1] .. "%{?autorelease}" )) }
 
 # Version
-# Check sub pkg versions from version.json
-# or from src/google/protobuf/compiler/versions.h
 %define protobuf_cpp_ver  6.%{version}
 %define protobuf_java_ver 4.%{version}
 
@@ -27,11 +29,6 @@
 %define libutf8         %mklibname utf8_range %{majorutf8}
 %define devutf8         %mklibname utf8_range -d
 
-#define rcver rc2
-
-Summary:        Protocol Buffers - Google's data interchange format
-Name:           protobuf
-Version:        30.2
 Release:        %mkrel 2
 License:        BSD
 Group:          System/Libraries
@@ -47,8 +44,6 @@ BuildRequires:  cmake(absl)
 BuildRequires:  ninja-build
 BuildRequires:  pkgconfig(zlib)
 BuildRequires:  g++
-
-%define uversion %{version}
 
 %description
 Protocol Buffers are a way of encoding structured data in an efficient
@@ -203,7 +198,7 @@ Protocol Buffer Parent POM.
 %endif
 
 %prep
-%autosetup -p1 -n %{name}-%{uversion}
+%autosetup -p1
 
 find -name \*.cc -o -name \*.h | xargs chmod -x
 
@@ -331,15 +326,15 @@ install -p -m 644 -D editors/proto.vim %{buildroot}%{_datadir}/vim/vimfiles/synt
 %doc third_party/utf8_range/README.md
 %license third_party/utf8_range/LICENSE
 %{_libdir}/libutf8_{range,validity}.so.%{major}
-%{_libdir}/libutf8_{range,validity}.so.%{uversion}.*
+%{_libdir}/libutf8_{range,validity}.so.%{version}.*
 
 %files compiler
 %doc README.md
 %license LICENSE
-%{_bindir}/protoc{,-%{uversion}.*}
-%{_bindir}/protoc-gen-upb{,-%{uversion}.*}
-%{_bindir}/protoc-gen-upb_minitable{,-%{uversion}.*}
-%{_bindir}/protoc-gen-upbdefs{,-%{uversion}.*}
+%{_bindir}/protoc{,-%{version}.*}
+%{_bindir}/protoc-gen-upb{,-%{version}.*}
+%{_bindir}/protoc-gen-upb_minitable{,-%{version}.*}
+%{_bindir}/protoc-gen-upbdefs{,-%{version}.*}
 
 %files -n %{libcompiler}
 %{_libdir}/libprotoc.so.%{major}{,.*}
