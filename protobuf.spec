@@ -21,7 +21,7 @@
 # Library names
 %define libname         %mklibname %{name} %{major}
 %define liblite         %mklibname %{name}-lite %{major}
-%define libcompiler     %mklibname protoc %{major}
+%define libcompiler     %mklibname libprotoc %{major}
 %define develname       %mklibname %{name} -d
 
 %define majorutf8       %{uversion}
