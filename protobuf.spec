@@ -11,7 +11,7 @@
 # Version
 # Check sub pkg versions from version.json
 # or from src/google/protobuf/compiler/versions.h
-%define uversion          30.0
+%define uversion          %{version}
 %define protobuf_cpp_ver  6.%{uversion}
 %define protobuf_java_ver 4.%{uversion}
 
@@ -32,7 +32,7 @@
 
 Summary:        Protocol Buffers - Google's data interchange format
 Name:           protobuf
-Version:        %{uversion}
+Version:        30.0
 Release:        %mkrel 2
 License:        BSD
 Group:          System/Libraries
