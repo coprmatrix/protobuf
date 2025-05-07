@@ -27,10 +27,13 @@ Version:        30.2
 
 %define major           %{uversion}
 %define majorutf8       %{major}
+%define uversion        %{version}
 
-%define uversion              %{version}
-%define protobuf_java_ver     4.%{version}
-%define protobuf_cpp_ver      6.%{version}
+%define protobuf_java_ver     4.%{uversion}
+%define protobuf_cpp_ver      6.%{uversion}
+%define _ver                  Version:
+%define cpp_ver %{_ver} %{protobuf_cpp_ver}
+%define java_ver %{_ver} %{protobuf_java_ver}
 
 # Major
 %define freeze() %{lua:
@@ -40,10 +43,10 @@ do
 end
 }
 
-%freeze protobuf_cpp_ver protobuf_java_ver uversion majorutf8 major
+%freeze uversion majorutf8 major protobuf_java_ver protobuf_cpp_ver cpp_ver java_ver
 
 Summary:        Protocol Buffers - Google's data interchange format
-Release:        2%{?autorelease}
+Release:        0%{?autorelease}
 License:        BSD
 Group:          System/Libraries
 URL:            https://github.com/protocolbuffers/protobuf
@@ -77,14 +80,14 @@ variety of languages.
 %package -n     %{libname}
 Summary:        %{summary}
 Group:          Development/Other
-Version:        %{protobuf_cpp_ver}
+%{cpp_ver}
 
 %description -n %{libname} %{_description}
 
 %package -n     %{liblite}
 Summary:        Protocol Buffers lite version
 Group:          Development/Other
-Version:        %{protobuf_cpp_ver}
+%{cpp_ver}
 
 %description -n %{liblite}
 This package contains a compiled with "optimize_for = LITE_RUNTIME"
@@ -98,7 +101,7 @@ other features.
 %package -n     %{libutf8}
 Summary:        Google's UTF8 Library
 Group:          System/Libraries
-Version:        %{protobuf_cpp_ver}
+%{cpp_ver}
 License:        MIT
 
 %description -n %{libutf8}
@@ -107,7 +110,7 @@ Fast UTF-8 validation with Range algorithm (NEON+SSE4+AVX2).
 %package -n     %{compiler}
 Summary:        Protocol Buffers compiler
 Group:          Development/Other
-Version:        %{protobuf_cpp_ver}
+%{cpp_ver}
 Recommends:     %{libname} = %{protobuf_cpp_ver}-%{release}
 Recommends:     %{liblite} = %{protobuf_cpp_ver}-%{release}
 
@@ -118,7 +121,7 @@ languages.
 %package -n     %{libcompiler}
 Summary:        Protocol Buffers compiler shared library
 Group:          System/Libraries
-Version:        %{protobuf_cpp_ver}
+%{cpp_ver}
 
 %description -n %{libcompiler}
 This package contains the Protocol Buffers compiler shared library.
@@ -126,7 +129,7 @@ This package contains the Protocol Buffers compiler shared library.
 %package -n     %{develname}
 Summary:        Protocol Buffers C++ headers and libraries
 Group:          Development/Other
-Version:        %{protobuf_cpp_ver}
+%{cpp_ver}
 Requires:       %{libname} = %{protobuf_cpp_ver}-%{release}
 Requires:       %{liblite} = %{protobuf_cpp_ver}-%{release}
 Requires:       %{libutf8} = %{protobuf_cpp_ver}-%{release}
@@ -141,7 +144,7 @@ C++ headers and libraries.
 %package -n     %{libvim}
 Summary:        Vim syntax highlighting for Google Protocol Buffers descriptions
 Group:          Development/Other
-Version:        %{protobuf_cpp_ver}
+%{cpp_ver}
 BuildArch:      noarch
 Requires:       vim-enhanced
 
@@ -153,7 +156,7 @@ descriptions in Vim editor.
 %package -n     %{javaname}
 Summary:        Java Protocol Buffers runtime library
 Group:          Development/Java
-Version:        %{protobuf_java_ver}
+%{java_ver}
 BuildArch:      noarch
 BuildRequires:  maven-local
 BuildRequires:  mvn(com.google.code.gson:gson)
@@ -176,7 +179,7 @@ This package contains Java Protocol Buffers runtime library.
 %package -n     %{javalite}
 Summary:        Java Protocol Buffers lite runtime library
 Group:          Development/Java
-Version:        %{protobuf_java_ver}
+%{java_ver}
 BuildArch:      noarch
 
 %description -n %{javalite}
@@ -185,7 +188,7 @@ This package contains Java Protocol Buffers lite runtime library.
 %package -n     %{javautil}
 Summary:        Utilities for Protocol Buffers
 Group:          Development/Java
-Version:        %{protobuf_java_ver}
+%{java_ver}
 BuildArch:      noarch
 
 %description -n %{javautil}
@@ -195,7 +198,7 @@ as well as utilities to work with proto3 well-known types.
 %package -n     %{bompom}
 Summary:        Protocol Buffer BOM POM
 Group:          Development/Java
-Version:        %{protobuf_java_ver}
+%{java_ver}
 BuildArch:      noarch
 
 %description -n %{bompom}
@@ -204,7 +207,7 @@ Protocol Buffer BOM POM.
 %package -n     %{libjavadoc}
 Summary:        Javadoc for %{_name}-java
 Group:          Documentation
-Version:        %{protobuf_java_ver}
+%{java_ver}
 BuildArch:      noarch
 
 %description -n %{libjavadoc}
@@ -213,7 +216,7 @@ This package contains the API documentation for %{_name}-java.
 %package -n     %{parentpom}
 Summary:        Protocol Buffer Parent POM
 Group:          Development/Java
-Version:        %{protobuf_java_ver}
+%{java_ver}
 BuildArch:      noarch
 
 %description -n %{parentpom}
