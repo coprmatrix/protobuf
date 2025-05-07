@@ -48,6 +48,8 @@ BuildRequires:  ninja-build
 BuildRequires:  pkgconfig(zlib)
 BuildRequires:  g++
 
+%define uversion %{version}
+
 %description
 Protocol Buffers are a way of encoding structured data in an efficient
 yet extensible format. Google uses Protocol Buffers for almost all of
