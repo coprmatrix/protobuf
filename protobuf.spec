@@ -12,22 +12,30 @@ Version:        30.2
 %define mklibname(d) %{lua: name = arg[1]; if opt.d then name = name .. "-devel" end; print(name) }
 %define mkrel() %{lua: print(rpm.expand( arg[1] .. "%{?autorelease}" )) }
 
-# Version
-%define protobuf_cpp_ver  6.%{version}
-%define protobuf_java_ver 4.%{version}
-
-# Major
-%define major           %{version}
-
 # Library names
 %define libname         %mklibname %{name} %{major}
 %define liblite         %mklibname %{name}-lite %{major}
 %define libcompiler     %mklibname libprotoc %{major}
 %define develname       %mklibname %{name} -d
 
-%define majorutf8       %{version}
+%define major           %{version}
+%define majorutf8       %{major}
 %define libutf8         %mklibname utf8_range %{majorutf8}
 %define devutf8         %mklibname utf8_range -d
+
+%define uversion              %{version}
+%define protobuf_java_ver     4.%{uversion}
+%define protobuf_cpp_ver      6.%{uversion}
+
+# Major
+%define freeze() %{lua:
+for key, value in ipairs(arg)
+do
+  rpm.define(value .. ' ' .. rpm.expand('%' .. value))
+end
+}
+
+%freeze protobuf_cpp_ver protobuf_java_ver uversion devutf8 libutf8 majorutf8 major develname libcompiler liblite libname
 
 Release:        %mkrel 2
 License:        BSD
@@ -326,15 +334,15 @@ install -p -m 644 -D editors/proto.vim %{buildroot}%{_datadir}/vim/vimfiles/synt
 %doc third_party/utf8_range/README.md
 %license third_party/utf8_range/LICENSE
 %{_libdir}/libutf8_{range,validity}.so.%{major}
-%{_libdir}/libutf8_{range,validity}.so.%{version}.*
+%{_libdir}/libutf8_{range,validity}.so.%{uversion}.*
 
 %files compiler
 %doc README.md
 %license LICENSE
-%{_bindir}/protoc{,-%{version}.*}
-%{_bindir}/protoc-gen-upb{,-%{version}.*}
-%{_bindir}/protoc-gen-upb_minitable{,-%{version}.*}
-%{_bindir}/protoc-gen-upbdefs{,-%{version}.*}
+%{_bindir}/protoc{,-%{uversion}.*}
+%{_bindir}/protoc-gen-upb{,-%{uversion}.*}
+%{_bindir}/protoc-gen-upb_minitable{,-%{uversion}.*}
+%{_bindir}/protoc-gen-upbdefs{,-%{uversion}.*}
 
 %files -n %{libcompiler}
 %{_libdir}/libprotoc.so.%{major}{,.*}
