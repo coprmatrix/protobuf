@@ -1,3 +1,7 @@
+Name:           protobuf-source
+Version:        30.2
+
+%define _name protobuf
 # Enablde tests
 %bcond_with check
 
@@ -5,27 +9,28 @@
 %bcond_without java
 %bcond_with java_tests
 
-Summary:        Protocol Buffers - Google's data interchange format
-Name:           protobuf
-Version:        30.2
-
-%define mklibname(d) %{lua: name = arg[1]; if opt.d then name = name .. "-devel" end; print(name) }
-%define mkrel() %{lua: print(rpm.expand( arg[1] .. "%{?autorelease}" )) }
-
 # Library names
-%define libname         %mklibname %{name} %{major}
-%define liblite         %mklibname %{name}-lite %{major}
-%define libcompiler     %mklibname libprotoc %{major}
-%define develname       %mklibname %{name} -d
+%define libname         %{_name}
+%define liblite         %{_name}-lite
+%define libcompiler     libprotoc
+%define develname       %{_name}-devel
+%define javaname        %{_name}-java
+%define javalite        %{_name}-javalite
+%define javautil        %{_name}-java-util
+%define libutf8         utf8_range
+%define devutf8         utf8_range-devel
+%define libvim          %{_name}-vim
+%define libjavadoc      %{_name}-javadoc
+%define bompom          %{_name}-pom
+%define parentpom       %{_name}-parent
+%define compiler        %{_name}-compiler
 
-%define major           %{version}
+%define major           %{uversion}
 %define majorutf8       %{major}
-%define libutf8         %mklibname utf8_range %{majorutf8}
-%define devutf8         %mklibname utf8_range -d
 
 %define uversion              %{version}
-%define protobuf_java_ver     4.%{uversion}
-%define protobuf_cpp_ver      6.%{uversion}
+%define protobuf_java_ver     4.%{version}
+%define protobuf_cpp_ver      6.%{version}
 
 # Major
 %define freeze() %{lua:
@@ -35,17 +40,18 @@ do
 end
 }
 
-%freeze protobuf_cpp_ver protobuf_java_ver uversion devutf8 libutf8 majorutf8 major develname libcompiler liblite libname
+%freeze protobuf_cpp_ver protobuf_java_ver uversion majorutf8 major
 
-Release:        %mkrel 2
+Summary:        Protocol Buffers - Google's data interchange format
+Release:        2%{?autorelease}
 License:        BSD
 Group:          System/Libraries
 URL:            https://github.com/protocolbuffers/protobuf
-Source0:        https://github.com/protocolbuffers/protobuf/archive/v%{version}%{?rcver}/%{name}-%{version}%{?rcver}-all.tar.gz
+Source0:        https://github.com/protocolbuffers/protobuf/archive/v%{version}%{?rcver}/%{_name}-%{version}%{?rcver}-all.tar.gz
 Source1:        ftdetect-proto.vim
-Source10:       https://repo1.maven.org/maven2/com/google/protobuf/%{name}-java/%{protobuf_java_ver}/%{name}-java-%{protobuf_java_ver}.pom
-Source11:       https://repo1.maven.org/maven2/com/google/protobuf/%{name}-javalite/%{protobuf_java_ver}/%{name}-javalite-%{protobuf_java_ver}.pom
-Source12:       https://repo1.maven.org/maven2/com/google/protobuf/%{name}-java-util/%{protobuf_java_ver}/%{name}-java-util-%{protobuf_java_ver}.pom
+Source10:       https://repo1.maven.org/maven2/com/google/protobuf/%{_name}-java/%{protobuf_java_ver}/%{_name}-java-%{protobuf_java_ver}.pom
+Source11:       https://repo1.maven.org/maven2/com/google/protobuf/%{_name}-javalite/%{protobuf_java_ver}/%{_name}-javalite-%{protobuf_java_ver}.pom
+Source12:       https://repo1.maven.org/maven2/com/google/protobuf/%{_name}-java-util/%{protobuf_java_ver}/%{_name}-java-util-%{protobuf_java_ver}.pom
 Patch100:       protobuf-SOVERSION.patch
 BuildRequires:  cmake
 BuildRequires:  cmake(absl)
@@ -53,7 +59,7 @@ BuildRequires:  ninja-build
 BuildRequires:  pkgconfig(zlib)
 BuildRequires:  g++
 
-%description
+%define _description %{expand:
 Protocol Buffers are a way of encoding structured data in an efficient
 yet extensible format. Google uses Protocol Buffers for almost all of
 its internal RPC protocols and file formats.
@@ -64,6 +70,16 @@ simpler. You define how you want your data to be structured once, then
 you can use special generated source code to easily write and read
 your structured data to and from a variety of data streams and using a
 variety of languages.
+}
+
+%description %{_description}
+
+%package -n     %{libname}
+Summary:        %{summary}
+Group:          Development/Other
+Version:        %{protobuf_cpp_ver}
+
+%description -n %{libname} %{_description}
 
 %package -n     %{liblite}
 Summary:        Protocol Buffers lite version
@@ -88,14 +104,14 @@ License:        MIT
 %description -n %{libutf8}
 Fast UTF-8 validation with Range algorithm (NEON+SSE4+AVX2).
 
-%package        compiler
+%package -n     %{compiler}
 Summary:        Protocol Buffers compiler
 Group:          Development/Other
 Version:        %{protobuf_cpp_ver}
 Recommends:     %{libname} = %{protobuf_cpp_ver}-%{release}
 Recommends:     %{liblite} = %{protobuf_cpp_ver}-%{release}
 
-%description    compiler
+%description -n %{compiler}
 This package contains Protocol Buffers compiler for all programming
 languages.
 
@@ -115,26 +131,26 @@ Requires:       %{libname} = %{protobuf_cpp_ver}-%{release}
 Requires:       %{liblite} = %{protobuf_cpp_ver}-%{release}
 Requires:       %{libutf8} = %{protobuf_cpp_ver}-%{release}
 Requires:       %{libcompiler} = %{protobuf_cpp_ver}-%{release}
-Requires:       %{name}-compiler = %{protobuf_cpp_ver}-%{release}
-Provides:       %{name}-devel = %{protobuf_cpp_ver}-%{release}
+Requires:       %{compiler} = %{protobuf_cpp_ver}-%{release}
+Provides:       lib%{_name}-devel = %{protobuf_cpp_ver}-%{release}
 
 %description -n %{develname}
 This package contains Protocol Buffers compiler for all languages and
 C++ headers and libraries.
 
-%package        vim
+%package -n     %{libvim}
 Summary:        Vim syntax highlighting for Google Protocol Buffers descriptions
 Group:          Development/Other
 Version:        %{protobuf_cpp_ver}
 BuildArch:      noarch
 Requires:       vim-enhanced
 
-%description    vim
+%description -n %{libvim}
 This package contains syntax highlighting for Google Protocol Buffers
 descriptions in Vim editor.
 
 %if %{with java}
-%package java
+%package -n     %{javaname}
 Summary:        Java Protocol Buffers runtime library
 Group:          Development/Java
 Version:        %{protobuf_java_ver}
@@ -154,53 +170,53 @@ BuildRequires:  mvn(com.google.truth:truth)
 BuildRequires:  mvn(junit:junit)
 %endif
 
-%description java
+%description -n %{javaname}
 This package contains Java Protocol Buffers runtime library.
 
-%package javalite
+%package -n     %{javalite}
 Summary:        Java Protocol Buffers lite runtime library
 Group:          Development/Java
 Version:        %{protobuf_java_ver}
 BuildArch:      noarch
 
-%description javalite
+%description -n %{javalite}
 This package contains Java Protocol Buffers lite runtime library.
 
-%package java-util
+%package -n     %{javautil}
 Summary:        Utilities for Protocol Buffers
 Group:          Development/Java
 Version:        %{protobuf_java_ver}
 BuildArch:      noarch
 
-%description java-util
+%description -n %{javautil}
 Utilities to work with protos. It contains JSON support
 as well as utilities to work with proto3 well-known types.
 
-%package bom
+%package -n     %{bompom}
 Summary:        Protocol Buffer BOM POM
 Group:          Development/Java
 Version:        %{protobuf_java_ver}
 BuildArch:      noarch
 
-%description bom
+%description -n %{bompom}
 Protocol Buffer BOM POM.
 
-%package javadoc
-Summary:        Javadoc for %{name}-java
+%package -n     %{libjavadoc}
+Summary:        Javadoc for %{_name}-java
 Group:          Documentation
 Version:        %{protobuf_java_ver}
 BuildArch:      noarch
 
-%description javadoc
-This package contains the API documentation for %{name}-java.
+%description -n %{libjavadoc}
+This package contains the API documentation for %{_name}-java.
 
-%package parent
+%package -n     %{parentpom}
 Summary:        Protocol Buffer Parent POM
 Group:          Development/Java
 Version:        %{protobuf_java_ver}
 BuildArch:      noarch
 
-%description parent
+%description -n %{parentpom}
 Protocol Buffer Parent POM.
 
 %endif
@@ -248,7 +264,7 @@ rm -r java/util/src/main/java/com/google/protobuf/util
 %pom_xpath_inject "pom:configuration/pom:instructions" "<Import-Package>sun.misc;resolution:=optional,*</Import-Package>" java/core/pom_template.xml
 
 # Backward compatibility symlink
-%mvn_file :protobuf-java:jar: %{name}/%{name}-java %{name}
+%mvn_file :protobuf-java:jar: %{_name}/%{_name}-java %{_name}
 
 # This test is incredibly slow on arm
 # https://github.com/google/protobuf/issues/2389
@@ -320,15 +336,15 @@ install -p -m 644 -D editors/proto.vim %{buildroot}%{_datadir}/vim/vimfiles/synt
 %mvn_install
 %endif
 
-%files
+%files -n %{libname}
 %doc CONTRIBUTORS.txt README.md
 %license LICENSE
-%{_libdir}/lib%{name}.so.%{major}{,.*}
+%{_libdir}/lib%{_name}.so.%{major}{,.*}
 
 %files -n %{liblite}
 %doc README.md
 %license LICENSE
-%{_libdir}/lib%{name}-lite.so.%{major}{,.*}
+%{_libdir}/lib%{_name}-lite.so.%{major}{,.*}
 
 %files -n %{libutf8}
 %doc third_party/utf8_range/README.md
@@ -336,7 +352,7 @@ install -p -m 644 -D editors/proto.vim %{buildroot}%{_datadir}/vim/vimfiles/synt
 %{_libdir}/libutf8_{range,validity}.so.%{major}
 %{_libdir}/libutf8_{range,validity}.so.%{uversion}.*
 
-%files compiler
+%files -n %{compiler}
 %doc README.md
 %license LICENSE
 %{_bindir}/protoc{,-%{uversion}.*}
@@ -351,13 +367,13 @@ install -p -m 644 -D editors/proto.vim %{buildroot}%{_datadir}/vim/vimfiles/synt
 %doc examples/add_person.cc examples/addressbook.proto
 %doc examples/list_people.cc examples/Makefile examples/README.md
 %dir %{_includedir}/google/
-%{_includedir}/google/%{name}/
-%{_libdir}/lib%{name}.so
-%{_libdir}/lib%{name}-lite.so
+%{_includedir}/google/%{_name}/
+%{_libdir}/lib%{_name}.so
+%{_libdir}/lib%{_name}-lite.so
 %{_libdir}/libprotoc.so
 %{_libdir}/cmake/protobuf/
-%{_libdir}/pkgconfig/%{name}.pc
-%{_libdir}/pkgconfig/%{name}-lite.pc
+%{_libdir}/pkgconfig/%{_name}.pc
+%{_libdir}/pkgconfig/%{_name}-lite.pc
 
 %{_libdir}/pkgconfig/upb.pc
 %{_libdir}/libupb.a
@@ -370,28 +386,28 @@ install -p -m 644 -D editors/proto.vim %{buildroot}%{_datadir}/vim/vimfiles/synt
 %{_libdir}/libutf8_range.so
 %{_libdir}/libutf8_validity.so
 
-%files vim
+%files -n %{libvim}
 %{_datadir}/vim/vimfiles/ftdetect/proto.vim
 %{_datadir}/vim/vimfiles/syntax/proto.vim
 
 %if %{with java}
-%files java -f .mfiles-protobuf-java
+%files -n %{javaname} -f .mfiles-protobuf-java
 %doc examples/AddPerson.java examples/ListPeople.java
 %doc java/README.md
 %license LICENSE
 
-%files java-util -f .mfiles-protobuf-java-util
+%files -n %{javautil} -f .mfiles-protobuf-java-util
 
-%files javadoc -f .mfiles-javadoc
+%files -n %{libjavadoc} -f .mfiles-javadoc
 %license LICENSE
 
-%files parent -f .mfiles-protobuf-parent
+%files -n %{parentpom} -f .mfiles-protobuf-parent
 %license LICENSE
 
-%files bom -f .mfiles-protobuf-bom
+%files -n %{bompom} -f .mfiles-protobuf-bom
 %license LICENSE
 
-%files javalite -f .mfiles-protobuf-javalite
+%files -n %{javalite} -f .mfiles-protobuf-javalite
 %license LICENSE
 %endif
 
