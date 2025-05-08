@@ -1,7 +1,8 @@
-Name:           protobuf-source
+%define _name protobuf
+
+Name:           %_name
 Version:        30.2
 
-%define _name protobuf
 # Enablde tests
 %bcond_with check
 
