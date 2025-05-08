@@ -10,9 +10,9 @@ Version:        30.2
 %bcond_with java_tests
 
 # Library names
-%define libname         %{_name}
-%define liblite         %{_name}-lite
-%define libcompiler     libprotoc
+%define libname         %{_name}-new
+%define liblite         %{_name}-new-lite
+%define libcompiler     libprotoc-new
 %define develname       %{_name}-devel
 %define javaname        %{_name}-java
 %define javalite        %{_name}-javalite
